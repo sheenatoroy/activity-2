@@ -17,7 +17,7 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
+        <transition-group name="fade" tag="tbody">
           <tr v-for="product in products" :key="product.id">
             <td>{{ product.name }}</td>
             <td>{{ product.description }}</td>
@@ -28,7 +28,7 @@
               <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
             </td>
           </tr>
-        </tbody>
+        </transition-group>
       </table>
     </div>
   </div>
@@ -40,7 +40,8 @@ export default {
   props: ['products'],
   methods: {
     addNewProduct() {
-      this.$emit('addProduct');},
+      this.$emit('addProduct');
+    },
     editProduct(product) {
       this.$emit('editProduct', product);
     },
@@ -131,5 +132,12 @@ tr:hover {
 
 .edit-button:hover, .delete-button:hover {
   opacity: 0.8;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
 }
 </style>

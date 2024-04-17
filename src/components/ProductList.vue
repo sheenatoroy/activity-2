@@ -1,7 +1,7 @@
 <template>
   <div class="crud-app">
     <div class="header-container">
-      <h2>School Supplies</h2>
+      <h2>Manage School Supplies</h2>
       <button class="add-button" @click="addNewProduct">
         <i class="fas fa-plus"></i> Add New Product
       </button>

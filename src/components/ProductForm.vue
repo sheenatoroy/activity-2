@@ -51,6 +51,8 @@
   }
   
   .form-group {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
     margin-bottom: 1rem;
   }
   
@@ -77,4 +79,4 @@
     cursor: pointer;
   }
   </style>
-  
+

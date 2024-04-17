@@ -1,28 +1,31 @@
 <template>
-  <div class="modal-mask">
-    <div class="modal-wrapper">
-      <div class="modal-container">
-        <div class="modal-header">
-          <h3>Edit Product</h3>
-        </div>
-        <div class="modal-body">
-          <div>
-            <label for="productName">Product Name:</label>
-            <input type="text" id="productName" v-model="editedProduct.name">
+  <transition name="fade">
+    <div class="modal-mask" @click.self="$emit('close')">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+          <div class="modal-header">
+            <h3>Edit Product</h3>
+            <button class="close-btn" @click="$emit('close')">X</button>
           </div>
-          <div>
-            <label for="productDescription">Description:</label>
-            <textarea id="productDescription" v-model="editedProduct.description"></textarea>
+          <div class="modal-body">
+            <div>
+              <label for="productName">Product Name:</label>
+              <input type="text" id="productName" v-model="editedProduct.name">
+            </div>
+            <div>
+              <label for="productDescription">Description:</label>
+              <textarea id="productDescription" v-model="editedProduct.description"></textarea>
+            </div>
+            <div>
+              <label for="productPrice">Price:</label>
+              <input type="number" id="productPrice" v-model.number="editedProduct.price">
+            </div>
+            <button @click="saveChanges">Save Changes</button>
           </div>
-          <div>
-            <label for="productPrice">Price:</label>
-            <input type="number" id="productPrice" v-model.number="editedProduct.price">
-          </div>
-          <button @click="updateProduct">Save Changes</button>
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -39,14 +42,25 @@ export default {
     };
   },
   methods: {
-    updateProduct() {
-      this.$emit('update-product', { ...this.editedProduct }); // Emit 'update-product' event with a cloned object
+    saveChanges() {
+      // Emit 'update-product' event with the edited product
+      this.$emit('update-product', { ...this.editedProduct });
+      // Close the modal
+      this.$emit('close');
     }
   }
 };
 </script>
 
 <style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -54,32 +68,75 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
+  background-color: rgba(34, 33, 33, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-container {
-  margin: 0 auto;
-  width: 50%;
-  max-width: 600px;
+  width: 80%;
+  max-width: 500px;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.modal-header,
-.modal-footer {
-  padding: 10px 20px;
-  border-bottom: 1px solid #eee;
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #777;
+}
+
+.close-btn:hover {
+  color: #333;
 }
 
 .modal-body {
   padding: 20px;
+}
+
+.modal-body input,
+.modal-body textarea {
+  width: 98%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.modal-body button {
+  background-color: #2196F3;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-body button:hover {
+  background-color: #0e83cd;
 }
 </style>

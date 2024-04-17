@@ -1,13 +1,14 @@
 <template>
   <div class="container">
     <div class="left-panel">
-      <transition name="fade">
+      <transition name="slide-fade">
         <ProductForm v-if="showForm" @addProduct="addProduct" />
       </transition>
     </div>
     <div class="right-panel">
       <ProductList :products="products" @editProduct="openEditModal" @deleteProduct="deleteProduct" @addProduct="showProductForm"/>
       <router-view @updateProduct="updateProduct"/>
+      <transition name="bounce">
       <BaseModal v-if="editModalOpen" @close="closeEditModal">
         <template v-slot:header>
           <h3>Edit Product</h3>
@@ -16,6 +17,7 @@
           <ProductModal :product="editingProduct" @updateProduct="updateProduct" />
         </template>
       </BaseModal>
+      </transition>
     </div>
     <div style="clear: both;"></div>
   </div>
@@ -107,11 +109,34 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 100px; 
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
 }
 
-.fade-enter, .fade-leave-to {
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
   opacity: 0;
 }
 </style>

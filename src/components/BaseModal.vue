@@ -1,5 +1,4 @@
 <template>
-  <transition name="fade">
     <div class="modal-mask" @click.self="$emit('close')">
       <div class="modal-wrapper">
         <div class="modal-container">
@@ -10,22 +9,24 @@
           <div class="modal-body">
             <div>
               <label for="productName">Product Name:</label>
-              <input type="text" id="productName" v-model="editedProduct.name">
+              <input type="text" id="productName" v-model="editedProduct.name" :class="{ 'error': errors.name }">
+              <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
             </div>
             <div>
               <label for="productDescription">Description:</label>
-              <textarea id="productDescription" v-model="editedProduct.description"></textarea>
+              <textarea id="productDescription" v-model="editedProduct.description" :class="{ 'error': errors.description }"></textarea>
+              <span v-if="errors.description" class="error-message">{{ errors.description }}</span>
             </div>
             <div>
               <label for="productPrice">Price:</label>
-              <input type="number" id="productPrice" v-model.number="editedProduct.price">
+              <input type="number" id="productPrice" v-model.number="editedProduct.price" :class="{ 'error': errors.price }">
+              <span v-if="errors.price" class="error-message">{{ errors.price }}</span>
             </div>
             <button @click="saveChanges">Save Changes</button>
           </div>
         </div>
       </div>
     </div>
-  </transition>
 </template>
 
 <script>
@@ -38,29 +39,45 @@ export default {
   },
   data() {
     return {
-      editedProduct: { ...this.product } // Clone the product to avoid directly mutating it
+      showModal: true,
+      editedProduct: { ...this.product },
+      errors: {}
     };
   },
   methods: {
     saveChanges() {
-      // Emit 'update-product' event with the edited product
-      this.$emit('update-product', { ...this.editedProduct });
-      // Close the modal
-      this.$emit('close');
+      if (this.validateForm()) {
+        this.$emit('update-product', { ...this.editedProduct });
+        this.$emit('close');
+      }
+    },
+    validateForm() {
+      this.errors = {};
+
+      let isValid = true;
+
+      if (!this.editedProduct.name) {
+        this.errors.name = 'Product name is required';
+        isValid = false;
+      }
+
+      if (!this.editedProduct.description) {
+        this.errors.description = 'Description is required';
+        isValid = false;
+      }
+
+      if (!this.editedProduct.price) {
+        this.errors.price = 'Price is required';
+        isValid = false;
+      }
+
+      return isValid;
     }
   }
 };
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -138,5 +155,10 @@ export default {
 
 .modal-body button:hover {
   background-color: #0e83cd;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
 }
 </style>

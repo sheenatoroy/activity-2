@@ -9,14 +9,14 @@
       <ProductList :products="products" @editProduct="openEditModal" @deleteProduct="deleteProduct" @addProduct="showProductForm"/>
       <router-view @updateProduct="updateProduct"/>
       <transition name="bounce">
-      <BaseModal v-if="editModalOpen" @close="closeEditModal">
-        <template v-slot:header>
-          <h3>Edit Product</h3>
-        </template>
-        <template v-slot:body>
-          <ProductModal :product="editingProduct" @updateProduct="updateProduct" />
-        </template>
-      </BaseModal>
+        <BaseModal v-if="editModalOpen" @close="closeEditModal" @save-changes="saveProductChanges" :product="editingProduct">
+          <template v-slot:header>
+            <h3>Edit Product</h3>
+          </template>
+          <template v-slot:body>
+            <p>Edit your product here.</p>
+          </template>
+        </BaseModal>
       </transition>
     </div>
     <div style="clear: both;"></div>
@@ -35,7 +35,6 @@ export default {
     ProductForm,
     BaseModal
   },
-  
   data() {
     return {
       products: [
@@ -57,7 +56,7 @@ export default {
       this.showForm = false;
     },
     openEditModal(product) {
-      this.editingProduct = product;
+      this.editingProduct = { ...product }; // Ensure to clone the object
       this.editModalOpen = true;
     },
     closeEditModal() {
@@ -68,8 +67,6 @@ export default {
       const index = this.products.findIndex(p => p.id === updatedProduct.id);
       if (index !== -1) {
         this.products.splice(index, 1, updatedProduct);
-        this.editModalOpen = false; // Close the modal after update
-        this.editingProduct = null; // Reset editing state
       }
     },
     deleteProduct(productId) {
@@ -80,11 +77,18 @@ export default {
     },
     showProductForm() {
       this.showForm = true;
-    }
+    },
+    saveProductChanges(updatedProduct) {
+      const index = this.products.findIndex(p => p.id === updatedProduct.id);
+      if (index !== -1) {
+        this.products.splice(index, 1, updatedProduct);
+        this.editModalOpen = false; // Close the modal after update
+        this.editingProduct = null; // Reset editing state
+      }
+    },
   }
 };
 </script>
-
 
 <style>
 .container {

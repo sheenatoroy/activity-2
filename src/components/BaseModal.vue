@@ -1,32 +1,32 @@
 <template>
-    <div class="modal-mask" @click.self="$emit('close')">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <div class="modal-header">
-            <h3>Edit Product</h3>
-            <button class="close-btn" @click="$emit('close')">X</button>
+  <div class="modal-mask" @click.self="$emit('close')">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>Edit Product</h3>
+          <button class="close-btn" @click="$emit('close')">X</button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" v-model="editedProduct.name" :class="{ 'error': errors.name }">
+            <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
           </div>
-          <div class="modal-body">
-            <div>
-              <label for="productName">Product Name:</label>
-              <input type="text" id="productName" v-model="editedProduct.name" :class="{ 'error': errors.name }">
-              <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
-            </div>
-            <div>
-              <label for="productDescription">Description:</label>
-              <textarea id="productDescription" v-model="editedProduct.description" :class="{ 'error': errors.description }"></textarea>
-              <span v-if="errors.description" class="error-message">{{ errors.description }}</span>
-            </div>
-            <div>
-              <label for="productPrice">Price:</label>
-              <input type="number" id="productPrice" v-model.number="editedProduct.price" :class="{ 'error': errors.price }">
-              <span v-if="errors.price" class="error-message">{{ errors.price }}</span>
-            </div>
-            <button @click="saveChanges">Save Changes</button>
+          <div>
+            <label for="productDescription">Description:</label>
+            <textarea id="productDescription" v-model="editedProduct.description" :class="{ 'error': errors.description }"></textarea>
+            <span v-if="errors.description" class="error-message">{{ errors.description }}</span>
           </div>
+          <div>
+            <label for="productPrice">Price:</label>
+            <input type="number" id="productPrice" v-model.number="editedProduct.price" :class="{ 'error': errors.price }">
+            <span v-if="errors.price" class="error-message">{{ errors.price }}</span>
+          </div>
+          <button @click="saveChanges">Save Changes</button>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -39,7 +39,6 @@ export default {
   },
   data() {
     return {
-      showModal: true,
       editedProduct: { ...this.product },
       errors: {}
     };
@@ -47,13 +46,12 @@ export default {
   methods: {
     saveChanges() {
       if (this.validateForm()) {
-        this.$emit('update-product', { ...this.editedProduct });
+        this.$emit('save-changes', { ...this.editedProduct });
         this.$emit('close');
       }
     },
     validateForm() {
       this.errors = {};
-
       let isValid = true;
 
       if (!this.editedProduct.name) {
@@ -156,6 +154,7 @@ export default {
 .modal-body button:hover {
   background-color: #0e83cd;
 }
+
 .error-message {
   color: red;
   font-size: 14px;

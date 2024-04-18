@@ -26,7 +26,7 @@
 <script>
 import ProductList from './components/ProductList.vue';
 import ProductForm from './components/ProductForm.vue';
-import BaseModal from './components/BaseModal.vue';
+import BaseModal from './components/BaseModal.vue'; 
 
 export default {
   name: 'App',
@@ -37,27 +37,19 @@ export default {
   },
   data() {
     return {
-      products: [],
+      products: [
+        { id: 1, name: "Orions", description: "A4 Bondpaper", price: 300 },
+        { id: 2, name: "HBW", description: "Ballpen", price: 150 },
+        { id: 3, name: "Mongol", description: "Pencil", price: 30 },
+        { id: 4, name: "Excellent", description: "Yellow Pad", price: 80 },
+        { id: 5, name: "Epson", description: "Ink", price: 350 }
+      ],
       showForm: false,
       editModalOpen: false,
       editingProduct: null
     };
   },
-  mounted() {
-    this.loadProducts(); // Fetch products when the component is mounted
-  },
   methods: {
-    async loadProducts() {
-      try {
-        const response = await fetch('http://localhost:3000/products'); // Fetch products from server
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        this.products = await response.json(); // Parse JSON response
-      } catch (error) {
-        console.error('Error loading products:', error);
-      }
-    },
     addProduct(product) {
       product.id = this.products.length + 1;
       this.products.push(product);
